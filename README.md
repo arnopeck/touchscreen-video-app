@@ -1,74 +1,172 @@
-============================================================
-VIDEOJUKEBOX - TOUCHSCREEN VIDEO APP
-============================================================
+# VideoJukebox 🎥
 
-Versione: 1.0
-Data: Aprile 2025
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Vite](https://img.shields.io/badge/Vite-5.0.0-blueviolet)](https://vitejs.dev/)
+[![Touchscreen](https://img.shields.io/badge/Touchscreen-Ready-orange)](https://developer.mozilla.org/en-US/docs/Web/API/Touch_events)
 
-Progetto sviluppato per l'utilizzo su con monitor touchscreen, 
-finalizzato alla consultazione autonoma di contenuti video suddivisi in categorie.
+A modern touchscreen video application designed for kiosk systems, built with vanilla JavaScript and optimized for public displays.
 
-------------------------------------------------------------
-CARATTERISTICHE PRINCIPALI
-------------------------------------------------------------
+## 🌟 Features
 
-- Funzionamento 100% locale, senza connessione Internet
-- Compatibilità browser: Chrome, Edge, Brave (modalità kiosk consigliata)
-- Navigazione touch ottimizzata
-- Riproduzione video fullscreen gestita dinamicamente
-- Ritorno automatico alla home dopo 5 minuti di inattività
-- URL dinamici via hash routing
-- Struttura dati semplice e modificabile via file "DB.js"
-- Sistema Admin Panel (in sviluppo) per gestione categorie/progetti
+- **Touch-Optimized Interface**
+  - Full touchscreen support
+  - Responsive design
+  - Kiosk mode ready
+  - Inactivity timeout management
 
-------------------------------------------------------------
-STRUTTURA DEL PROGETTO
-------------------------------------------------------------
+- **Video Management**
+  - Automatic video preloading
+  - Error handling with retry mechanism
+  - Fullscreen video playback
+  - Loading states and user feedback
 
-/ (root)
-|-- index.html          (Home app touchscreen)
-|-- css/
-|    |-- styles.css     (Stile principale)
-|-- js/
-|    |-- app.js         (Logica di navigazione e funzionalità)
-|-- data/
-|    |-- DB.js          (Database delle categorie e progetti)
-|-- video/
-|    |-- (cartelle video per categoria)
-|-- admin/
-|    |-- admin.html     (Pannello di gestione database)
-|    |-- admin.js       (Logica admin)
-|    |-- admin.css      (Stile admin)
+- **Content Organization**
+  - Category-based navigation
+  - Project listings
+  - Author and institution attribution
+  - Easy content management
 
-------------------------------------------------------------
-ISTRUZIONI DI UTILIZZO
-------------------------------------------------------------
+- **Performance & Security**
+  - No external dependencies
+  - Optimized asset loading
+  - Error recovery mechanisms
+  - Kiosk-mode security features
 
-1. Avviare "index.html" in un browser supportato.
-2. L'app funziona interamente offline: non è necessaria alcuna installazione.
-3. Per aggiornare dati/categorie/progetti:
-   - Accedere a "admin/admin.html"
-   - Modificare o creare nuove voci
-   - Esportare il nuovo "DB.js" e sostituirlo nella cartella /data
+## 🚀 Quick Start
 
-ATTENZIONE:
-- I file video devono essere salvati seguendo la struttura: "video/{id_categoria}/{nome_file_video}.mp4"
-- I nomi dei file devono corrispondere esattamente a quelli inseriti nel database.
+### Prerequisites
 
-------------------------------------------------------------
-REQUISITI MINIMI
-------------------------------------------------------------
+- Node.js (v14 or higher)
+- npm (v6 or higher)
 
-- Browser moderno (consigliato Chrome in modalità full-screen kiosk)
-- Mini PC o sistema embedded capace di gestire riproduzione video locale 1080p
-- Monitor touchscreen 1080p o superiore
+### Installation
 
-------------------------------------------------------------
-COPYRIGHT
-------------------------------------------------------------
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/touchscreen-video-app.git
+   cd touchscreen-video-app
+   ```
 
-© 2025 Arno Peck & Amico Immaginario 
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Tutti i diritti riservati.
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-------------------------------------------------------------
+4. Build for production:
+   ```bash
+   npm run build
+   ```
+
+## 📁 Project Structure
+
+```
+touchscreen-video-app/
+├── index.html          # Main application entry point
+├── css/               # Stylesheets
+│   └── styles.css     # Main styles
+├── js/                # JavaScript files
+│   └── app.js         # Application logic
+├── data/              # Data files
+│   └── DB.js          # Content database
+├── video/             # Video content
+│   ├── archeologie/   # Category videos
+│   ├── nature/        # Category videos
+│   └── ai/           # Category videos
+└── admin/             # Admin interface
+```
+
+## 🛠️ Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+
+### Adding New Content
+
+1. Add video files to the appropriate category folder in `video/`
+2. Update `data/DB.js` with new content:
+   ```javascript
+   {
+     "id": "category_id",
+     "nome_categoria": "Category Name",
+     "descrizione_categoria": "Category Description",
+     "progetti": [
+       {
+         "id": 1,
+         "titolo": "Project Title",
+         "sottotitolo": "Project Subtitle",
+         "istituzioni": ["Institution 1", "Institution 2"],
+         "autori": {
+           "Institution 1": ["Author 1", "Author 2"],
+           "Institution 2": ["Author 3"]
+         },
+         "file_video": "video/category_id/video.mp4"
+       }
+     ]
+   }
+   ```
+
+## 📱 Kiosk Mode Setup
+
+### Chrome Kiosk Mode
+
+1. Create a shortcut to Chrome
+2. Add these flags:
+   ```
+   --kiosk --app=http://localhost:5173 --disable-pinch --overscroll-history-navigation=0
+   ```
+
+### Windows Auto-Start
+
+1. Create a batch file (`start-kiosk.bat`):
+   ```batch
+   @echo off
+   start chrome.exe --kiosk --app=http://localhost:5173 --disable-pinch --overscroll-history-navigation=0
+   ```
+
+2. Add to Windows startup:
+   - Press `Win + R`
+   - Type `shell:startup`
+   - Copy the batch file to the startup folder
+
+## 🔒 Security Considerations
+
+- The application runs in kiosk mode
+- Inactivity timeout returns to home screen
+- No external dependencies
+- Content is served locally
+- Touch events are sanitized
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [Vite](https://vitejs.dev/)
+- Code formatting with [Prettier](https://prettier.io/)
+- Linting with [ESLint](https://eslint.org/)
+
+## 📧 Contact
+
+Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - email@example.com
+
+Project Link: [https://github.com/yourusername/touchscreen-video-app](https://github.com/yourusername/touchscreen-video-app)
