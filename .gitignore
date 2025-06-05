@@ -1,0 +1,40 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Video content
+video/
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# Node modules (if using optional development tools)
+node_modules/
+
+# Build output (if using optional development tools)
+dist/
+build/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~ 
