@@ -166,6 +166,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - email@example.com
+Arno Peck - [@arnopeck](https://twitter.com/arnopeck)
 
-Project Link: [https://github.com/yourusername/touchscreen-video-app](https://github.com/yourusername/touchscreen-video-app)
+Project Link: [https://github.com/arnopeck/touchscreen-video-app](https://github.com/arnopeck/touchscreen-video-app)
