@@ -2,80 +2,114 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="VideoJukebox - Touchscreen video application for kiosk systems">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>VideoJukebox</title>
+  
+  <!-- Preload critical assets -->
+  <link rel="preload" href="css/styles.css" as="style">
+  <link rel="preload" href="js/app.js" as="script">
+  <link rel="preload" href="data/DB.js" as="script">
+  
+  <!-- Styles -->
   <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- Prevent text selection for kiosk mode -->
+  <style>
+    * {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    video::-webkit-media-controls {
+      -webkit-user-select: none;
+    }
+  </style>
 </head>
 <body>
-
-<div id="app">
+<div id="app" role="application" aria-label="VideoJukebox Application">
 
   <!-- Home -->
-  <section id="home" class="page">
+  <section id="home" class="page" role="main" aria-label="Home Page">
     <h1>VideoJukebox</h1>
-    <div id="categorie"></div>
+    <div id="categorie" role="navigation" aria-label="Categories"></div>
   </section>
 
   <!-- Categoria -->
-  <section id="categoria" class="page">
-    <button onclick="goHome()">Home</button>
-    <div id="menuCategorie">
-      <select id="selectCategorie"></select>
+  <section id="categoria" class="page" role="main" aria-label="Category Page">
+    <button onclick="goHome()" aria-label="Return to Home">Home</button>
+    <div id="menuCategorie" role="navigation" aria-label="Category Menu">
+      <select id="selectCategorie" aria-label="Select Category"></select>
     </div>
     <h2 id="categoriaNome"></h2>
     <p id="categoriaDescrizione"></p>
-    <button id="visualizzaProgetti">Visualizza i progetti</button>
+    <button id="visualizzaProgetti" aria-label="View Projects">Visualizza i progetti</button>
   </section>
 
   <!-- Lista Progetti -->
-  <section id="progetti" class="page">
-    <button onclick="goHome()">Home</button>
-    <!-- <div id="menuCategorie">
-      <select id="selectCategorie"></select>
-    </div>	 -->
+  <section id="progetti" class="page" role="main" aria-label="Projects List">
+    <button onclick="goHome()" aria-label="Return to Home">Home</button>
     <h2 id="progettiTitolo"></h2>
-    <div id="listaProgetti"></div>
+    <div id="listaProgetti" role="list" aria-label="Projects List"></div>
   </section>
 
   <!-- Dettaglio Progetto -->
-  <section id="progetto" class="page">
-	<div id="paginaContenuti">
-	<button onclick="goHome()">Home</button>
+  <section id="progetto" class="page" role="main" aria-label="Project Details">
+    <div id="paginaContenuti">
+      <button onclick="goHome()" aria-label="Return to Home">Home</button>
 
-	<div id="navigazioneProgetti">
-	  <button id="prevProgetto" class="naviga">&lsaquo;</button>
-	  <button id="nextProgetto" class="naviga">&rsaquo;</button>
-	</div>
+      <div id="navigazioneProgetti" role="navigation" aria-label="Project Navigation">
+        <button id="prevProgetto" class="naviga" aria-label="Previous Project">&lsaquo;</button>
+        <button id="nextProgetto" class="naviga" aria-label="Next Project">&rsaquo;</button>
+      </div>
 
-	  <div id="videoContainer">
-		<div id="playButton"></div>
-		<video id="progettoVideo" preload="metadata">
-		  Il tuo browser non supporta il tag video.
-		</video>
-		<div id="loadingSpinner"></div>
-		<div id="videoErrorContainer">
-		  <h3>Errore Video</h3>
-		  <p class="error-message"></p>
-		  <button class="retry-button">Riprova</button>
-		</div>
-	  </div>
-	  <h2 id="progettoTitolo"></h2>
-	  <h3 id="progettoSottotitolo"></h3>
-	  <div id="progettoAutori"></div>
-	</div>
+      <div id="videoContainer" role="region" aria-label="Video Player">
+        <div id="playButton" role="button" aria-label="Play Video"></div>
+        <video id="progettoVideo" preload="metadata" playsinline aria-label="Project Video">
+          Il tuo browser non supporta il tag video.
+        </video>
+        <div id="loadingSpinner" role="status" aria-label="Loading" aria-hidden="true"></div>
+        <div id="videoErrorContainer" role="alert" aria-hidden="true">
+          <h3>Errore Video</h3>
+          <p class="error-message"></p>
+          <button class="retry-button" aria-label="Retry Video">Riprova</button>
+        </div>
+      </div>
+      
+      <h2 id="progettoTitolo"></h2>
+      <h3 id="progettoSottotitolo"></h3>
+      <div id="progettoAutori" role="contentinfo" aria-label="Project Authors"></div>
+    </div>
   
-  	<div id="overlayVideoContainer" style="display: none;">
-	  <button id="closeFullscreenButton">✕</button>
-	  <video id="overlayVideo" controls></video>
-	</div>
-
+    <div id="overlayVideoContainer" style="display: none;" role="dialog" aria-label="Fullscreen Video">
+      <button id="closeFullscreenButton" aria-label="Close Fullscreen">✕</button>
+      <video id="overlayVideo" controls playsinline aria-label="Fullscreen Video"></video>
+    </div>
   </section>
 
 </div>
 
-<!-- Prima carico il database -->
+<!-- Loading indicator for initial app load -->
+<div id="app-loading" style="display: none;" role="status" aria-label="Loading Application">
+  <div class="spinner"></div>
+</div>
+
+<!-- Scripts -->
+<script>
+  // Show loading indicator
+  document.getElementById('app-loading').style.display = 'block';
+  
+  // Handle app load
+  window.addEventListener('load', function() {
+    document.getElementById('app-loading').style.display = 'none';
+  });
+</script>
+
+<!-- Database and Application -->
 <script src="data/DB.js"></script>
-<!-- Poi carico l'app che usa il database -->
 <script src="js/app.js"></script>
 
 </body>

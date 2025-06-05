@@ -5,7 +5,7 @@ VIDEOJUKEBOX - TOUCHSCREEN VIDEO APP
 Versione: 1.0
 Data: Aprile 2025
 
-Progetto sviluppato per l'utilizzo su sistemi multi-monitor touchscreen, 
+Progetto sviluppato per l'utilizzo su con monitor touchscreen, 
 finalizzato alla consultazione autonoma di contenuti video suddivisi in categorie.
 
 ------------------------------------------------------------
