@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VideoJukebox</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Home -->
+  <section id="home" class="page">
+    <h1>VideoJukebox</h1>
+    <div id="categorie"></div>
+  </section>
+
+  <!-- Categoria -->
+  <section id="categoria" class="page">
+    <button onclick="goHome()">Home</button>
+    <div id="menuCategorie">
+      <select id="selectCategorie"></select>
+    </div>
+    <h2 id="categoriaNome"></h2>
+    <p id="categoriaDescrizione"></p>
+    <button id="visualizzaProgetti">Visualizza i progetti</button>
+  </section>
+
+  <!-- Lista Progetti -->
+  <section id="progetti" class="page">
+    <button onclick="goHome()">Home</button>
+    <!-- <div id="menuCategorie">
+      <select id="selectCategorie"></select>
+    </div>	 -->
+    <h2 id="progettiTitolo"></h2>
+    <div id="listaProgetti"></div>
+  </section>
+
+  <!-- Dettaglio Progetto -->
+  <section id="progetto" class="page">
+	<div id="paginaContenuti">
+	<button onclick="goHome()">Home</button>
+
+	<div id="navigazioneProgetti">
+	  <button id="prevProgetto" class="naviga">&lsaquo;</button>
+	  <button id="nextProgetto" class="naviga">&rsaquo;</button>
+	</div>
+
+	  <div id="videoContainer">
+		<div id="playButton"></div>
+		<video id="progettoVideo" preload="metadata">
+		  Il tuo browser non supporta il tag video.
+		</video>
+		<div id="loadingSpinner"></div>
+		<div id="videoErrorContainer">
+		  <h3>Errore Video</h3>
+		  <p class="error-message"></p>
+		  <button class="retry-button">Riprova</button>
+		</div>
+	  </div>
+	  <h2 id="progettoTitolo"></h2>
+	  <h3 id="progettoSottotitolo"></h3>
+	  <div id="progettoAutori"></div>
+	</div>
+  
+  	<div id="overlayVideoContainer" style="display: none;">
+	  <button id="closeFullscreenButton">✕</button>
+	  <video id="overlayVideo" controls></video>
+	</div>
+
+  </section>
+
+</div>
+
+<!-- Prima carico il database -->
+<script src="data/DB.js"></script>
+<!-- Poi carico l'app che usa il database -->
+<script src="js/app.js"></script>
+
+</body>
+</html>
