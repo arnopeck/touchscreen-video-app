@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Terrae Aquae</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header>
+	<h1>Admin - Terrae Aquae</h1>
+	<div>
+	  <button id="loadDBBtn">Carica DB.js</button>
+	  <button id="exportDB">Esporta DB.js</button>
+	  <button id="openSite" onclick="window.open('../index.html', '_blank')">Apri Sito</button>
+	  <input type="file" id="loadDB" accept=".js" style="display:none;">
+	</div>
+  </header>
+
+  <main>
+	<section id="categorieSection">
+	  <h2>Categorie</h2>
+	  <div id="categorieList"></div>
+	  <button id="addCategoria">+ Aggiungi Categoria</button>
+	</section>
+
+	<section id="progettiSection">
+	  <h2>Progetti</h2>
+	  <div id="progettiList"></div>
+	  <button id="addProgetto">+ Aggiungi Progetto</button>
+	</section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

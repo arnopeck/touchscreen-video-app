@@ -1,0 +1,96 @@
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #0d0d0d;
+  color: #e0e0e0;
+}
+
+header {
+  background: #00ffff;
+  color: #0d0d0d;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+header button {
+  margin-left: 1rem;
+  background: none;
+  border: 2px solid #0d0d0d;
+  color: #0d0d0d;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+header button:hover {
+  background: #0d0d0d;
+  color: #00ffff;
+}
+
+main {
+  display: flex;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+section {
+  flex: 1;
+  background: #121212;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+#categorieList, #progettiList {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.categoriaItem, .progettoItem {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border: 2px solid #00ffff;
+  background: #0d0d0d;
+  color: #e0e0e0;
+  border-radius: 8px;
+}
+
+button.action {
+  margin-top: 0.5rem;
+  background: none;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button.action:hover {
+  background: #00ffff;
+  color: #0d0d0d;
+}

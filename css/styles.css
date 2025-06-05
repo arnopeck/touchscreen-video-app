@@ -1,0 +1,255 @@
+/* Container generale della pagina */
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #0d0d0d;
+  color: #e0e0e0;
+}
+
+/* Ogni pagina */
+.page {
+  display: none;
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+}
+
+.active {
+  display: block;
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* Titoli */
+h1, h2, h3 {
+  margin: 1rem 0;
+  font-weight: 300;
+}
+
+/* Bottoni */
+button {
+  background: none;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #00ffff;
+  color: #0d0d0d;
+}
+
+/* Categorie e Lista Progetti */
+#categorie, #listaProgetti {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+#categorie button, #listaProgetti button {
+  width: 100%;
+  text-align: center;
+}
+
+/* Descrizione categoria */
+#categoriaDescrizione {
+  max-width: 600px;
+  margin: 2rem 0;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+/* Bottone visualizza progetti */
+#visualizzaProgetti {
+  margin-top: 2rem;
+}
+
+/* Sezione autori */
+#progettoAutori {
+  margin-top: 2rem;
+}
+
+#progettoAutori h4 {
+  margin-top: 1.5rem;
+  color: #00ffff;
+}
+
+#progettoAutori p {
+  margin: 0.5rem 0;
+}
+
+
+#navigazioneProgetti {
+  position: absolute;
+  top: 50%;
+  width: calc(100% - 60px);
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.naviga {
+  background: none;
+  border: none;
+  color: #00ffff;
+  font-size: 4rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 50%;
+  pointer-events: all;
+  opacity: 1;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.naviga:hover {
+  transform: scale(1.2);
+}
+
+.naviga.disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+
+
+/* Video Container Thumbnail */
+#videoContainer {
+  position: relative;
+  width: 300px;
+  margin: 2rem auto;
+  transition: all 0.5s ease;
+  cursor: pointer;
+  z-index: 6000;
+}
+
+/* Video Thumbnail */
+#progettoVideo {
+  width: 100%;
+  height: auto;
+  border: 2px solid #00ffff;
+  border-radius: 12px;
+  opacity: 0.9;
+  transition: all 0.5s ease;
+  pointer-events: none; /* per non bloccare il click sul container */
+}
+
+/* Bottone Play sovrapposto */
+#playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  background: rgba(0,255,255,0.8);
+  clip-path: polygon(30% 20%, 70% 50%, 30% 80%);
+  transform: translate(-50%, -50%);
+  transition: all 0.5s ease;
+  z-index: 10;
+}
+
+#playButton.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Overlay fullscreen video */
+#overlayVideoContainer {
+  display: none;
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-height: calc(100vh - 120px); /* <-- prima era 80px */
+  background: black;
+  z-index: 9000;
+}
+
+
+/* Video dentro overlay */
+#overlayVideo {
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+  /* border: 2px solid #00ffff; */
+  border-radius: 12px;
+}
+
+
+#closeFullscreenButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+  font-size: 2rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 10001;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+#closeFullscreenButton:hover {
+  background: #00ffff;
+  color: #0d0d0d;
+  opacity: 1;
+}
+
+
+
+/* Animazione fade */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Transizione fade-out e fade-in */
+#paginaContenuti, #overlayVideoContainer {
+  transition: opacity 0.5s ease;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Menu a tendina categorie */
+#menuCategorie {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+}
+
+#selectCategorie {
+  background: none;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+  padding: 0.8rem 2rem 0.8rem 1.2rem;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='%2300ffff' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 0.8rem auto;
+}
+
+#selectCategorie:hover {
+  background: #00ffff;
+  color: #0d0d0d;
+}
+
+#selectCategorie option {
+  background: #0d0d0d;
+  color: #e0e0e0;
+}
