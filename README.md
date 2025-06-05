@@ -2,12 +2,17 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Vite](https://img.shields.io/badge/Vite-5.0.0-blueviolet)](https://vitejs.dev/)
 [![Touchscreen](https://img.shields.io/badge/Touchscreen-Ready-orange)](https://developer.mozilla.org/en-US/docs/Web/API/Touch_events)
 
-A modern touchscreen video application designed for kiosk systems, built with vanilla JavaScript and optimized for public displays.
+A modern touchscreen video application designed for kiosk systems, built with vanilla JavaScript and optimized for public displays. **Runs completely offline with zero dependencies!**
 
 ## 🌟 Features
+
+- **Zero Dependencies**
+  - Pure vanilla JavaScript
+  - No installation required
+  - Works completely offline
+  - Just open and run!
 
 - **Touch-Optimized Interface**
   - Full touchscreen support
@@ -35,33 +40,18 @@ A modern touchscreen video application designed for kiosk systems, built with va
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Running the Application
 
-- Node.js (v14 or higher)
-- npm (v6 or higher)
+1. Simply open `index.html` in a modern web browser
+2. That's it! No installation or setup required
 
-### Installation
+### Recommended Browser Settings
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/touchscreen-video-app.git
-   cd touchscreen-video-app
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Build for production:
-   ```bash
-   npm run build
-   ```
+For optimal kiosk experience:
+- Use Chrome, Edge, or Brave in kiosk mode
+- Enable fullscreen mode
+- Disable browser navigation
+- Set appropriate security policies
 
 ## 📁 Project Structure
 
@@ -81,15 +71,22 @@ touchscreen-video-app/
 └── admin/             # Admin interface
 ```
 
-## 🛠️ Development
+## 🛠️ Development (Optional)
 
-### Available Scripts
+For developers who want to modify the application, we provide some optional development tools:
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run format` - Format code with Prettier
+### Development Tools (Optional)
+
+If you want to modify the application, you can use these optional tools:
+- Vite for development server
+- ESLint for code linting
+- Prettier for code formatting
+
+To use these tools:
+1. Install Node.js and npm (optional, only for development)
+2. Run `npm install` to install development dependencies
+3. Use `npm run dev` for development server
+4. Use `npm run build` to create a production build
 
 ### Adding New Content
 
@@ -123,7 +120,7 @@ touchscreen-video-app/
 1. Create a shortcut to Chrome
 2. Add these flags:
    ```
-   --kiosk --app=http://localhost:5173 --disable-pinch --overscroll-history-navigation=0
+   --kiosk --app=file:///path/to/your/index.html --disable-pinch --overscroll-history-navigation=0
    ```
 
 ### Windows Auto-Start
@@ -131,7 +128,7 @@ touchscreen-video-app/
 1. Create a batch file (`start-kiosk.bat`):
    ```batch
    @echo off
-   start chrome.exe --kiosk --app=http://localhost:5173 --disable-pinch --overscroll-history-navigation=0
+   start chrome.exe --kiosk --app=file:///path/to/your/index.html --disable-pinch --overscroll-history-navigation=0
    ```
 
 2. Add to Windows startup:
@@ -161,9 +158,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built with [Vite](https://vitejs.dev/)
-- Code formatting with [Prettier](https://prettier.io/)
-- Linting with [ESLint](https://eslint.org/)
+- Built with vanilla JavaScript
+- Optional development tools:
+  - [Vite](https://vitejs.dev/) for development
+  - [Prettier](https://prettier.io/) for code formatting
+  - [ESLint](https://eslint.org/) for code linting
 
 ## 📧 Contact
 
