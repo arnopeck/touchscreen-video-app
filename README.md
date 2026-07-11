@@ -42,8 +42,9 @@ A modern touchscreen video application designed for kiosk systems, built with va
 
 ### Running the Application
 
-1. Simply open `index.html` in a modern web browser
-2. That's it! No installation or setup required
+1. Add your video files to the `video/` folder (video content is not included in this repository — see [Adding New Content](#adding-new-content))
+2. Simply open `index.html` in a modern web browser
+3. That's it! No installation or setup required
 
 ### Recommended Browser Settings
 

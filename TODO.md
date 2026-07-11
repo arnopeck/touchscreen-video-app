@@ -8,9 +8,11 @@
 - [ ] Video definitivi al posto dei file di prova attuali.
 
 ## Da valutare
-- [ ] Politica dei video in git: `.gitignore` esclude `video/` e `*.mp4`, ma alcuni mp4 sono tracciati da prima — decidere se tenerli nel repo (demo funzionante al clone) o distribuirli a parte.
 - [ ] Immagine poster per l'anteprima video (attributo `poster`) per evitare il riquadro nero prima del caricamento dei metadati.
 - [ ] Campo `ordine` nei progetti del DB, se serve un ordinamento diverso da quello di inserimento.
+
+## Fatto (12 luglio 2026)
+- [x] Video rimossi dal repo GitHub: `video/` è solo locale, chi clona deve aggiungere i propri mp4 (vedi README).
 
 ## Fatto (11 luglio 2026)
 - [x] Pulizia DB dai dati finti senza video (Categoria_4) e fix id stringa.
