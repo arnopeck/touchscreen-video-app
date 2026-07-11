@@ -69,7 +69,7 @@ touchscreen-video-app/
 │   ├── archeologie/   # Category videos
 │   ├── nature/        # Category videos
 │   └── ai/           # Category videos
-└── admin/             # Admin interface (legacy, being reworked — see TODO.md)
+└── admin/             # Content manager (Chrome/Edge, no installation needed)
 ```
 
 ## 🛠️ Development (Optional)
@@ -90,6 +90,15 @@ To use these tools:
 4. Use `npm run build` to create a production build
 
 ### Adding New Content
+
+**Option A — Admin interface (recommended, Chrome/Edge):**
+
+1. Open `admin/admin.html` in Chrome or Edge
+2. Click "Apri cartella progetto" and select the project folder
+3. Create categories, drag & drop video files onto projects, edit texts
+4. Click "Salva modifiche" — `data/DB.js` is written directly, no manual steps
+
+**Option B — Manual editing:**
 
 1. Add video files to the appropriate category folder in `video/`
 2. Update `data/DB.js` with new content:

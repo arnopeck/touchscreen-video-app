@@ -1,8 +1,5 @@
 # TODO
 
-## Prossimo grande passo
-- [ ] **Riscrivere l'interfaccia admin** (`admin/`): oggi usa `innerHTML` senza escaping (si rompe con gli apostrofi, es. "Istituto d'Arte"), valuta il DB caricato con `new Function()` e mostra campi (`nome_file_video`, `ordine`) che non esistono nel formato reale di `DB.js`. Va rifatta con `textContent`/form sicuri e allineata al formato del DB.
-
 ## Contenuti
 - [ ] Sostituire i progetti segnaposto "Test" e "Provolone" (categoria `ai`) con contenuti reali.
 - [ ] Video definitivi al posto dei file di prova attuali.
@@ -12,7 +9,8 @@
 - [ ] Campo `ordine` nei progetti del DB, se serve un ordinamento diverso da quello di inserimento.
 
 ## Fatto (12 luglio 2026)
-- [x] Video rimossi dal repo GitHub: `video/` è solo locale, chi clona deve aggiungere i propri mp4 (vedi README).
+- [x] **Admin riscritta da zero** (`admin/`): File System Access API (Chrome/Edge), niente installazioni — apertura cartella progetto, creazione categorie con cartella in `video/`, drag & drop dei video, anteprima, salvataggio diretto di `data/DB.js`. Sicura: `JSON.parse` invece di `new Function`, `textContent` invece di `innerHTML`, CSP. UI con gli stessi token di design dell'app. Da verificare a mano: il picker della cartella aprendo la pagina via `file://` (se Chrome lo blocca, usare `http://localhost`).
+- [x] Video rimossi dal repo GitHub (anche dalla storia, riscritta con filter-branch): `video/` è solo locale, chi clona deve aggiungere i propri mp4 (vedi README).
 
 ## Fatto (11 luglio 2026)
 - [x] Pulizia DB dai dati finti senza video (Categoria_4) e fix id stringa.

@@ -3,34 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Terrae Aquae</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' blob:; base-uri 'none'; form-action 'none'">
+  <title>VideoJukebox — Admin</title>
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-  <header>
-	<h1>Admin - Terrae Aquae</h1>
-	<div>
-	  <button id="loadDBBtn">Carica DB.js</button>
-	  <button id="exportDB">Esporta DB.js</button>
-	  <button id="openSite" onclick="window.open('../index.html', '_blank')">Apri Sito</button>
-	  <input type="file" id="loadDB" accept=".js" style="display:none;">
-	</div>
-  </header>
 
-  <main>
-	<section id="categorieSection">
-	  <h2>Categorie</h2>
-	  <div id="categorieList"></div>
-	  <button id="addCategoria">+ Aggiungi Categoria</button>
-	</section>
+<header>
+  <h1>VideoJukebox <span>Admin</span></h1>
+  <p id="stato" role="status"></p>
+  <button id="salvaDB" disabled>Salva modifiche</button>
+</header>
 
-	<section id="progettiSection">
-	  <h2>Progetti</h2>
-	  <div id="progettiList"></div>
-	  <button id="addProgetto">+ Aggiungi Progetto</button>
-	</section>
-  </main>
+<!-- Schermata di apertura -->
+<section id="apertura">
+  <h2>Gestione contenuti</h2>
+  <p>
+    Apri la cartella del progetto VideoJukebox per gestire categorie, progetti e video.
+    Le modifiche vengono scritte direttamente in <code>data/DB.js</code>
+    e i video trascinati vengono copiati in <code>video/</code>.
+  </p>
+  <button id="apriCartella">Apri cartella progetto</button>
+  <p id="aperturaErrore" role="alert" hidden></p>
+  <p class="nota">Richiede Chrome o Edge. Nessuna installazione necessaria.</p>
+</section>
 
-  <script src="admin.js"></script>
+<!-- Editor -->
+<main id="editor" hidden>
+  <aside id="pannelloCategorie">
+    <h2>Categorie</h2>
+    <div id="categorieList"></div>
+    <form id="nuovaCategoriaForm">
+      <input id="nuovaCategoriaNome" placeholder="Nome nuova categoria" autocomplete="off">
+      <button type="submit">Crea categoria</button>
+    </form>
+    <p class="nota">Creare una categoria crea anche la cartella corrispondente in <code>video/</code>.</p>
+  </aside>
+
+  <section id="pannelloProgetti">
+    <div id="categoriaDettagli" hidden>
+      <div class="rigaCampo">
+        <label for="catNome">Nome categoria</label>
+        <input id="catNome" autocomplete="off">
+      </div>
+      <div class="rigaCampo">
+        <label for="catDescrizione">Descrizione</label>
+        <textarea id="catDescrizione" rows="2"></textarea>
+      </div>
+      <div class="rigaAzioni">
+        <span id="catInfo" class="nota"></span>
+        <button id="eliminaCategoria" class="pericolo">Elimina categoria</button>
+      </div>
+      <hr>
+      <div id="progettiHeader">
+        <h2>Progetti</h2>
+        <button id="aggiungiProgetto">Aggiungi progetto</button>
+      </div>
+      <div id="progettiList"></div>
+    </div>
+    <p id="nessunaCategoria" class="nota">Seleziona o crea una categoria per gestirne i progetti.</p>
+  </section>
+</main>
+
+<!-- Anteprima video -->
+<div id="anteprimaOverlay" hidden>
+  <button id="chiudiAnteprima" aria-label="Chiudi anteprima">&#10005;</button>
+  <video id="anteprimaVideo" controls playsinline></video>
+</div>
+
+<script src="admin.js"></script>
 </body>
 </html>

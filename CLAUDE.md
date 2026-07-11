@@ -16,7 +16,7 @@ App touchscreen per chioschi espositivi (musei, mostre): l'utente naviga categor
   - `#home` · `#categoria/{id}` · `#categoria/{id}/progetti` · `#categoria/{id}/progetto/{id}`
 - `data/DB.js` — "database" come costante globale `data`: categorie → progetti (titolo, sottotitolo, istituzioni, autori, `file_video`). I video stanno in `video/{id-categoria}/`.
 - `js/app.js` — router, rendering, player video (anteprima + overlay fullscreen), gestione errori con 3 retry per video, timeout di inattività di 5 minuti (sospeso mentre un video è in riproduzione).
-- `admin/` — **legacy, da riscrivere** (vedi TODO.md): non allineata al formato del DB e con problemi di sicurezza. Non basarsi sul suo codice.
+- `admin/` — editor dei contenuti basato su **File System Access API** (solo Chrome/Edge): l'utente apre la cartella del progetto, crea categorie (= cartelle in `video/`), trascina i video, e l'admin scrive direttamente `data/DB.js`. Il DB viene letto con `JSON.parse` (mai `eval`/`new Function`) e scritto come `const data = <JSON>;` — mantenere questo formato. Il textarea autori usa una riga per istituzione: `Ente: Nome, Nome`.
 
 ## Avvio e verifica
 
