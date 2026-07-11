@@ -100,36 +100,18 @@ const data = [
         "file_video": "video/ai/5.mp4"
       },
       {
-      "id": "3",
-      "titolo": "Provolone",
-      "sottotitolo": "Test progetto 3",
-      "istituzioni": [
-        "Istituto d'Arte"
-      ],
-      "autori": {
-        "Istituto d'Arte": [
-          "Pippo Banga"
-        ]
-      },
-      "file_video": "video/ai/4.mp4"
-      }  
-    ]
-  },
-  {
-    "id": "Categoria_4",
-    "nome_categoria": "Categoria 4",
-    "descrizione_categoria": "Un'altra categoria!",
-    "progetti": [
-      {
-        "id": 1745780205079,
-        "titolo": "Pippo",
-        "sottotitolo": "Pipponi",
+        "id": 3,
+        "titolo": "Provolone",
+        "sottotitolo": "Test progetto 3",
         "istituzioni": [
-          "Pippo Scuola",
-          "Pippo Museo"
+          "Istituto d'Arte"
         ],
-        "autori": {},
-        "file_video": "video/Categoria_4/pippo.mp4"
+        "autori": {
+          "Istituto d'Arte": [
+            "Pippo Banga"
+          ]
+        },
+        "file_video": "video/ai/4.mp4"
       }
     ]
   }

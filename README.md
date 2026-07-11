@@ -68,7 +68,7 @@ touchscreen-video-app/
 │   ├── archeologie/   # Category videos
 │   ├── nature/        # Category videos
 │   └── ai/           # Category videos
-└── admin/             # Admin interface
+└── admin/             # Admin interface (legacy, being reworked — see TODO.md)
 ```
 
 ## 🛠️ Development (Optional)
@@ -139,10 +139,10 @@ To use these tools:
 ## 🔒 Security Considerations
 
 - The application runs in kiosk mode
-- Inactivity timeout returns to home screen
-- No external dependencies
-- Content is served locally
-- Touch events are sanitized
+- Inactivity timeout returns to home screen (suspended while a video is playing)
+- Content-Security-Policy: only local resources are allowed (no external scripts, styles or media)
+- No external dependencies, content is served locally
+- Context menu and zoom gestures are disabled
 
 ## 🤝 Contributing
 

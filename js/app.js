@@ -1,121 +1,115 @@
-//console.log('app start');
+// VideoJukebox — logica applicazione per chioschi touchscreen
 
-let inactivityTimeout;
-
-// Add these constants at the top of the file after the inactivityTimeout declaration
-const ERROR_STATES = {
+const VIDEO_STATES = {
   NONE: 'none',
   LOADING: 'loading',
   ERROR: 'error',
   PLAYING: 'playing'
 };
 
-let currentVideoState = ERROR_STATES.NONE;
-let videoErrorCount = 0;
 const MAX_RETRY_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 2000;
+const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
+const TRANSITION_MS = 500;
+
+let inactivityTimeout;
+let currentVideoState = VIDEO_STATES.NONE;
+let retryVideoSetup = null; // reimpostata da renderProgetto sul progetto corrente
+
+// --- Stato del player video ---
 
 function updateVideoState(state, errorMessage = '') {
   currentVideoState = state;
-  const videoContainer = document.getElementById('videoContainer');
+  const container = document.getElementById('videoContainer');
   const errorContainer = document.getElementById('videoErrorContainer');
-  const loadingSpinner = document.getElementById('loadingSpinner');
-  
-  // Reset all states
-  videoContainer.classList.remove('error', 'loading', 'playing');
-  if (errorContainer) errorContainer.style.display = 'none';
-  if (loadingSpinner) loadingSpinner.style.display = 'none';
-  
-  switch (state) {
-    case ERROR_STATES.LOADING:
-      videoContainer.classList.add('loading');
-      if (loadingSpinner) loadingSpinner.style.display = 'block';
-      break;
-    case ERROR_STATES.ERROR:
-      videoContainer.classList.add('error');
-      if (errorContainer) {
-        errorContainer.style.display = 'block';
-        errorContainer.querySelector('.error-message').textContent = errorMessage;
-      }
-      break;
-    case ERROR_STATES.PLAYING:
-      videoContainer.classList.add('playing');
-      break;
+  const spinner = document.getElementById('loadingSpinner');
+
+  container.classList.remove('error', 'loading', 'playing');
+  if (state === VIDEO_STATES.LOADING) container.classList.add('loading');
+  if (state === VIDEO_STATES.PLAYING) container.classList.add('playing');
+  if (state === VIDEO_STATES.ERROR) {
+    container.classList.add('error');
+    errorContainer.querySelector('.error-message').textContent = errorMessage;
   }
+  errorContainer.setAttribute('aria-hidden', String(state !== VIDEO_STATES.ERROR));
+  spinner.setAttribute('aria-hidden', String(state !== VIDEO_STATES.LOADING));
 }
 
-function handleVideoError(video, isFullscreen = false) {
-  const errorMessage = `Errore nel caricamento del video${videoErrorCount < MAX_RETRY_ATTEMPTS ? '. Tentativo ' + (videoErrorCount + 1) + ' di ' + MAX_RETRY_ATTEMPTS : ''}`;
-  updateVideoState(ERROR_STATES.ERROR, errorMessage);
-  
-  if (videoErrorCount < MAX_RETRY_ATTEMPTS) {
-    videoErrorCount++;
+function handleVideoError(video) {
+  // Contatore per singolo elemento video: anteprima e overlay falliscono
+  // entrambi sullo stesso file e non devono sommarsi a vicenda
+  video.tentativiErrore = (video.tentativiErrore || 0) + 1;
+  if (video.tentativiErrore <= MAX_RETRY_ATTEMPTS) {
+    updateVideoState(
+      VIDEO_STATES.ERROR,
+      `Errore nel caricamento del video. Tentativo ${video.tentativiErrore} di ${MAX_RETRY_ATTEMPTS}.`
+    );
     setTimeout(() => {
+      updateVideoState(VIDEO_STATES.LOADING);
       video.load();
-      video.play().catch(err => {
-        console.warn('Riprova autoplay fallita:', err);
-      });
-    }, 2000); // Retry after 2 seconds
+    }, RETRY_DELAY_MS);
   } else {
-    // After max retries, show permanent error
-    updateVideoState(ERROR_STATES.ERROR, 'Impossibile caricare il video. Contattare l\'amministratore.');
+    updateVideoState(VIDEO_STATES.ERROR, "Impossibile caricare il video. Contattare l'amministratore.");
   }
 }
 
-function resetVideoErrorState() {
-  videoErrorCount = 0;
-  updateVideoState(ERROR_STATES.NONE);
+// --- Timer di inattività ---
+
+function isVideoPlaying() {
+  return ['progettoVideo', 'overlayVideo'].some(id => {
+    const video = document.getElementById(id);
+    return video && !video.paused && !video.ended;
+  });
 }
 
 function resetInactivityTimer() {
   clearTimeout(inactivityTimeout);
-
-  const video = document.getElementById('progettoVideo');
-  if (video && !video.paused) {
-	// Se un video sta riproducendo, NON imposto il timeout
-	console.log('Video in riproduzione, nessun timeout di inattività.');
-	return;
-  }
-
-  inactivityTimeout = setTimeout(() => {
-	console.log('Inattività rilevata, torno alla home');
-	goHome();
-  }, 5 * 60 * 1000); // 5 minuti
+  // Durante la riproduzione niente timeout: riparte da pause/ended
+  if (isVideoPlaying()) return;
+  inactivityTimeout = setTimeout(goHome, INACTIVITY_TIMEOUT_MS);
 }
+
+// --- Router ---
 
 function router() {
   const hash = window.location.hash.slice(1);
   const parts = hash.split('/').filter(p => p);
 
+  stopVideos();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
   if (!hash || parts[0] === 'home') {
-	document.title = 'Terrae Aquae';
-	document.getElementById('home').classList.add('active');
-	renderHome();
+    document.title = 'VideoJukebox';
+    document.getElementById('home').classList.add('active');
+    renderHome();
   } else if (parts[0] === 'categoria' && parts.length === 2) {
-	document.title = `Terrae Aquae - ${getCategoriaNome(parts[1])}`;
-	document.getElementById('categoria').classList.add('active');
-	renderCategoria(parts[1]);
+    document.title = `VideoJukebox - ${getCategoriaNome(parts[1])}`;
+    document.getElementById('categoria').classList.add('active');
+    renderCategoria(parts[1]);
   } else if (parts[0] === 'categoria' && parts.length === 3 && parts[2] === 'progetti') {
-	document.title = `Terrae Aquae - ${getCategoriaNome(parts[1])}`;
-	document.getElementById('progetti').classList.add('active');
-	renderListaProgetti(parts[1]);
+    document.title = `VideoJukebox - ${getCategoriaNome(parts[1])}`;
+    document.getElementById('progetti').classList.add('active');
+    renderListaProgetti(parts[1]);
   } else if (parts[0] === 'categoria' && parts.length === 4 && parts[2] === 'progetto') {
-	document.title = `Terrae Aquae - ${getCategoriaNome(parts[1])} - ${getProgettoTitolo(parts[1], parts[3])}`;
-	document.getElementById('progetto').classList.add('active');
-	renderProgetto(parts[1], parts[3]);
+    document.title = `VideoJukebox - ${getCategoriaNome(parts[1])} - ${getProgettoTitolo(parts[1], parts[3])}`;
+    document.getElementById('progetto').classList.add('active');
+    renderProgetto(parts[1], parts[3]);
   } else {
-	goHome();
+    goHome();
   }
 }
 
+function getCategoria(catId) {
+  return data.find(c => c.id === catId);
+}
+
 function getCategoriaNome(catId) {
-  const categoria = data.find(c => c.id === catId);
+  const categoria = getCategoria(catId);
   return categoria ? categoria.nome_categoria : '';
 }
 
 function getProgettoTitolo(catId, projId) {
-  const categoria = data.find(c => c.id === catId);
+  const categoria = getCategoria(catId);
   if (!categoria) return '';
   const progetto = categoria.progetti.find(p => p.id == projId);
   return progetto ? progetto.titolo : '';
@@ -124,245 +118,244 @@ function getProgettoTitolo(catId, projId) {
 function enterFullscreen() {
   const elem = document.documentElement;
   if (elem.requestFullscreen) {
-	elem.requestFullscreen().catch(err => console.warn('Fullscreen fallito:', err));
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
-	elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
-	elem.msRequestFullscreen();
+    elem.requestFullscreen().catch(() => {});
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
   }
 }
+
+function stopVideos() {
+  ['progettoVideo', 'overlayVideo'].forEach(id => {
+    const video = document.getElementById(id);
+    if (video && !video.paused) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+}
+
+function goHome() {
+  stopVideos();
+  location.hash = 'home';
+  enterFullscreen();
+}
+
+// --- Rendering pagine ---
 
 function renderHome() {
   const container = document.getElementById('categorie');
   container.innerHTML = '';
   data.forEach(cat => {
-	const btn = document.createElement('button');
-	btn.textContent = cat.nome_categoria;
-	btn.onclick = () => {
-		location.hash = `categoria/${cat.id}`;
-		enterFullscreen();
-	}
-	container.appendChild(btn);
+    const btn = document.createElement('button');
+    btn.textContent = cat.nome_categoria;
+    btn.onclick = () => {
+      location.hash = `categoria/${cat.id}`;
+      enterFullscreen();
+    };
+    container.appendChild(btn);
   });
 }
 
+function renderCategoria(id) {
+  const categoria = getCategoria(id);
+  if (!categoria) return goHome();
+  document.getElementById('categoriaNome').textContent = categoria.nome_categoria;
+  document.getElementById('categoriaDescrizione').textContent = categoria.descrizione_categoria;
+  document.getElementById('visualizzaProgetti').onclick = () => (location.hash = `categoria/${id}/progetti`);
+
+  const select = document.getElementById('selectCategorie');
+  select.innerHTML = '';
+  data.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat.id;
+    option.textContent = cat.nome_categoria;
+    option.selected = cat.id === id;
+    select.appendChild(option);
+  });
+  select.onchange = () => {
+    location.hash = `categoria/${select.value}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+}
+
 function renderListaProgetti(id) {
-  const categoria = data.find(c => c.id === id);
+  const categoria = getCategoria(id);
   if (!categoria) return goHome();
   document.getElementById('progettiTitolo').textContent = categoria.nome_categoria;
   const lista = document.getElementById('listaProgetti');
   lista.innerHTML = '';
   categoria.progetti.forEach(p => {
-	const btn = document.createElement('button');
-	btn.textContent = p.titolo + ' (' + p.istituzioni.join(', ') + ')';
-	btn.onclick = () => location.hash = `categoria/${id}/progetto/${p.id}`;
-	lista.appendChild(btn);
+    const btn = document.createElement('button');
+    const titolo = document.createElement('span');
+    titolo.className = 'progettoTitoloVoce';
+    titolo.textContent = p.titolo;
+    const enti = document.createElement('span');
+    enti.className = 'progettoIstituzioniVoce';
+    enti.textContent = p.istituzioni.join(', ');
+    btn.append(titolo, enti);
+    btn.onclick = () => (location.hash = `categoria/${id}/progetto/${p.id}`);
+    lista.appendChild(btn);
   });
 }
 
 function renderProgetto(catId, projId) {
-  const categoria = data.find(c => c.id === catId);
+  const categoria = getCategoria(catId);
   if (!categoria) return goHome();
   const progetto = categoria.progetti.find(p => p.id == projId);
   if (!progetto) return goHome();
 
-  // Aggiorna testi progetto
   document.getElementById('progettoTitolo').textContent = progetto.titolo;
   document.getElementById('progettoSottotitolo').textContent = progetto.sottotitolo;
+
+  const tornaCategoria = document.getElementById('tornaCategoria');
+  tornaCategoria.textContent = categoria.nome_categoria;
+  tornaCategoria.onclick = () => (location.hash = `categoria/${catId}`);
 
   const autoriDiv = document.getElementById('progettoAutori');
   autoriDiv.innerHTML = '';
   for (const ente in progetto.autori) {
-	const h4 = document.createElement('h4');
-	h4.textContent = ente;
-	autoriDiv.appendChild(h4);
-	progetto.autori[ente].forEach(nome => {
-	  const p = document.createElement('p');
-	  p.textContent = nome;
-	  autoriDiv.appendChild(p);
-	});
+    const gruppo = document.createElement('div');
+    gruppo.className = 'autoriGruppo';
+    const h4 = document.createElement('h4');
+    h4.textContent = ente;
+    gruppo.appendChild(h4);
+    progetto.autori[ente].forEach(nome => {
+      const p = document.createElement('p');
+      p.textContent = nome;
+      gruppo.appendChild(p);
+    });
+    autoriDiv.appendChild(gruppo);
   }
 
-  // Elementi video e navigazione
   const videoThumb = document.getElementById('progettoVideo');
   const videoFull = document.getElementById('overlayVideo');
   const paginaContenuti = document.getElementById('paginaContenuti');
   const overlayContainer = document.getElementById('overlayVideoContainer');
-  const playBtn = document.getElementById('playButton');
   const container = document.getElementById('videoContainer');
   const closeButton = document.getElementById('closeFullscreenButton');
   const prevButton = document.getElementById('prevProgetto');
   const nextButton = document.getElementById('nextProgetto');
 
-  // Reset error state for new video
-  resetVideoErrorState();
-  
-  // Add loading state
-  updateVideoState(ERROR_STATES.LOADING);
-  
-  // Setup video sources with error handling
-  function setupVideo(video, isFullscreen = false) {
-    video.src = progetto.file_video;
-    
-    video.onloadstart = () => {
-      updateVideoState(ERROR_STATES.LOADING);
-    };
-    
-    video.oncanplay = () => {
-      updateVideoState(ERROR_STATES.PLAYING);
-    };
-    
-    video.onerror = (e) => {
-      console.error('Video error:', e);
-      handleVideoError(video, isFullscreen);
-    };
-    
-    video.onstalled = () => {
-      console.warn('Video stalled');
-      handleVideoError(video, isFullscreen);
-    };
-    
-    video.onwaiting = () => {
-      updateVideoState(ERROR_STATES.LOADING);
-    };
-    
-    video.onplaying = () => {
-      updateVideoState(ERROR_STATES.PLAYING);
-    };
-    
-    video.load();
-  }
-  
-  setupVideo(videoThumb);
-  setupVideo(videoFull, true);
+  // Riporta la pagina allo stato iniziale: l'overlay può essere rimasto
+  // aperto se il timeout di inattività è scattato a video in pausa
+  overlayContainer.classList.remove('aperto');
+  paginaContenuti.classList.remove('nascosto', 'hidden');
 
-  // Funzione per chiudere fullscreen
+  updateVideoState(VIDEO_STATES.LOADING);
+
   function chiudiFullscreen() {
     videoFull.pause();
     videoFull.currentTime = 0;
-    videoFull.load();
-    overlayContainer.classList.add('hidden');
-    setTimeout(() => {
-      overlayContainer.style.display = 'none';
-      paginaContenuti.style.display = 'block';
-      paginaContenuti.classList.remove('hidden');
-    }, 500);
+    overlayContainer.classList.remove('aperto');
+    paginaContenuti.classList.remove('nascosto', 'hidden');
+    // Se l'overlay era in buffering, riallinea lo stato all'anteprima
+    if (currentVideoState === VIDEO_STATES.LOADING) {
+      updateVideoState(videoThumb.readyState >= 2 ? VIDEO_STATES.PLAYING : VIDEO_STATES.LOADING);
+    }
   }
 
-  // Update the container click handler
-  container.onclick = () => {
-    if (currentVideoState === ERROR_STATES.ERROR) {
-      // If in error state, try to reload the video
-      resetVideoErrorState();
-      setupVideo(videoFull, true);
-      return;
+  function setupVideo(video, isFullscreen = false) {
+    video.tentativiErrore = 0;
+    video.src = progetto.file_video;
+
+    video.onloadstart = () => updateVideoState(VIDEO_STATES.LOADING);
+    video.oncanplay = () => updateVideoState(VIDEO_STATES.PLAYING);
+    video.onwaiting = () => updateVideoState(VIDEO_STATES.LOADING);
+    video.onplaying = () => updateVideoState(VIDEO_STATES.PLAYING);
+
+    video.onerror = () => {
+      if (isFullscreen) chiudiFullscreen();
+      handleVideoError(video);
+    };
+
+    if (isFullscreen) {
+      video.onplay = resetInactivityTimer;
+      video.onpause = resetInactivityTimer;
+      video.onended = () => {
+        chiudiFullscreen();
+        resetInactivityTimer();
+      };
     }
-    
+
+    video.load();
+  }
+
+  retryVideoSetup = () => {
+    updateVideoState(VIDEO_STATES.LOADING);
+    setupVideo(videoThumb);
+    setupVideo(videoFull, true);
+  };
+
+  setupVideo(videoThumb);
+  setupVideo(videoFull, true);
+
+  function apriFullscreen() {
     paginaContenuti.classList.add('hidden');
     setTimeout(() => {
-      paginaContenuti.style.display = 'none';
-      overlayContainer.style.display = 'block';
-      overlayContainer.classList.remove('hidden');
-      videoFull.controls = false;
-      videoFull.play().catch(err => {
-        console.warn('Autoplay bloccato:', err);
-        handleVideoError(videoFull, true);
+      paginaContenuti.classList.add('nascosto');
+      overlayContainer.classList.add('aperto');
+      videoFull.play().catch(() => {
+        chiudiFullscreen();
+        handleVideoError(videoFull);
       });
-    }, 500);
+    }, TRANSITION_MS);
+  }
+
+  container.onclick = () => {
+    if (currentVideoState === VIDEO_STATES.ERROR) {
+      retryVideoSetup();
+      return;
+    }
+    apriFullscreen();
   };
 
-  // Click sul video per chiudere
   videoFull.onclick = chiudiFullscreen;
-
-  // Click sulla X per chiudere
   closeButton.onclick = chiudiFullscreen;
 
-// Trova posizione corrente
-  const progettoCorrenteIndex = categoria.progetti.findIndex(p => p.id == projId);
-  
-  // Abilita/disabilita bottoni con opacity
-  if (progettoCorrenteIndex > 0) {
-	prevButton.classList.remove('disabled');
-  } else {
-	prevButton.classList.add('disabled');
-  }
-  
-  if (progettoCorrenteIndex < categoria.progetti.length - 1) {
-	nextButton.classList.remove('disabled');
-  } else {
-	nextButton.classList.add('disabled');
-  }
-  
-  // Clic su freccia sinistra
-  prevButton.onclick = (e) => {
-	e.stopPropagation();
-	if (progettoCorrenteIndex > 0) {
-	  const progettoPrecedente = categoria.progetti[progettoCorrenteIndex - 1];
-	  location.hash = `categoria/${catId}/progetto/${progettoPrecedente.id}`;
-	}
+  const indiceCorrente = categoria.progetti.findIndex(p => p.id == projId);
+
+  prevButton.classList.toggle('disabled', indiceCorrente <= 0);
+  nextButton.classList.toggle('disabled', indiceCorrente >= categoria.progetti.length - 1);
+
+  prevButton.onclick = e => {
+    e.stopPropagation();
+    if (indiceCorrente > 0) {
+      location.hash = `categoria/${catId}/progetto/${categoria.progetti[indiceCorrente - 1].id}`;
+    }
   };
-  
-  // Clic su freccia destra
-  nextButton.onclick = (e) => {
-	e.stopPropagation();
-	if (progettoCorrenteIndex < categoria.progetti.length - 1) {
-	  const progettoSuccessivo = categoria.progetti[progettoCorrenteIndex + 1];
-	  location.hash = `categoria/${catId}/progetto/${progettoSuccessivo.id}`;
-	}
+
+  nextButton.onclick = e => {
+    e.stopPropagation();
+    if (indiceCorrente < categoria.progetti.length - 1) {
+      location.hash = `categoria/${catId}/progetto/${categoria.progetti[indiceCorrente + 1].id}`;
+    }
   };
 }
 
-function goHome() {
-  const video = document.getElementById('progettoVideo');
-  if (video && !video.paused) {
-	video.pause();
-	video.currentTime = 0;
-  }
-  
-  location.hash = 'home';
-  
-  enterFullscreen(); // Richiama la funzione di fullscreen
-}
+// --- Avvio ---
 
-function renderCategoria(id) {
-  console.log('Chiamata renderCategoria con id:', id);
-  const categoria = data.find(c => c.id === id);
-  console.log('Categoria trovata:', categoria);
-  if (!categoria) return goHome();
-  document.getElementById('categoriaNome').textContent = categoria.nome_categoria;
-  document.getElementById('categoriaDescrizione').textContent = categoria.descrizione_categoria;
-  document.getElementById('visualizzaProgetti').onclick = () => location.hash = `categoria/${id}/progetti`;
+function initApp() {
+  document.querySelectorAll('.home-button').forEach(btn => (btn.onclick = goHome));
 
-  // === GESTIONE MENU A TENDINA ===
-  const select = document.getElementById('selectCategorie');
-  select.innerHTML = '';
-  data.forEach(cat => {
-	const option = document.createElement('option');
-	option.value = cat.id;
-	option.textContent = cat.nome_categoria;
-	if (cat.id === id) {
-	  option.selected = true;
-	}
-	select.appendChild(option);
-  });
-  select.onchange = () => {
-	location.hash = `categoria/${select.value}`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.querySelector('#videoErrorContainer .retry-button').onclick = e => {
+    e.stopPropagation();
+    if (retryVideoSetup) retryVideoSetup();
   };
+
+  router();
+  resetInactivityTimer();
 }
 
 window.addEventListener('hashchange', () => {
   router();
-  resetInactivityTimer(); // Resetto timer anche se cambio pagina
+  resetInactivityTimer();
 });
-window.addEventListener('load', () => {
-  router();
-  resetInactivityTimer(); // Resetto timer anche al primo load
-});
+window.addEventListener('load', initApp);
 
-// Eventi per attività utente
-window.addEventListener('mousemove', resetInactivityTimer);
-window.addEventListener('mousedown', resetInactivityTimer);
-window.addEventListener('touchstart', resetInactivityTimer);
-window.addEventListener('keydown', resetInactivityTimer);
+['mousemove', 'mousedown', 'touchstart', 'keydown'].forEach(evt =>
+  window.addEventListener(evt, resetInactivityTimer, { passive: true })
+);
 
+// Hardening kiosk: niente menu contestuale né gesti di zoom
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('gesturestart', e => e.preventDefault());
