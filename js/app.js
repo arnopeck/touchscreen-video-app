@@ -15,6 +15,7 @@ const TRANSITION_MS = 500;
 let inactivityTimeout;
 let currentVideoState = VIDEO_STATES.NONE;
 let retryVideoSetup = null; // reimpostata da renderProgetto sul progetto corrente
+let chiudiFullscreenCorrente = null; // idem: chiude l'overlay del progetto corrente
 
 // --- Stato del player video ---
 
@@ -253,6 +254,7 @@ function renderProgetto(catId, projId) {
       updateVideoState(videoThumb.readyState >= 2 ? VIDEO_STATES.PLAYING : VIDEO_STATES.LOADING);
     }
   }
+  chiudiFullscreenCorrente = chiudiFullscreen;
 
   function setupVideo(video, isFullscreen = false) {
     video.tentativiErrore = 0;
@@ -355,6 +357,13 @@ window.addEventListener('load', initApp);
 ['mousemove', 'mousedown', 'touchstart', 'keydown'].forEach(evt =>
   window.addEventListener(evt, resetInactivityTimer, { passive: true })
 );
+
+// Esc chiude il video a schermo intero
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape' || !chiudiFullscreenCorrente) return;
+  const overlay = document.getElementById('overlayVideoContainer');
+  if (overlay.classList.contains('aperto')) chiudiFullscreenCorrente();
+});
 
 // Hardening kiosk: niente menu contestuale né gesti di zoom
 document.addEventListener('contextmenu', e => e.preventDefault());
