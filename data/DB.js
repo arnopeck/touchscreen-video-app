@@ -41,6 +41,17 @@ const data = [
           ]
         },
         "file_video": "video/archeologie/2.mp4"
+      },
+      {
+        "id": 1783857015086,
+        "titolo": "Pippocazzo va al mare",
+        "sottotitolo": "de' piglia i favolli...",
+        "istituzioni": [
+          "Pippocazzo",
+          "Rondello Stamberghi"
+        ],
+        "autori": {},
+        "file_video": "video/archeologie/VIDEO DEL PROTOTIPO.mov"
       }
     ]
   },
@@ -112,6 +123,31 @@ const data = [
           ]
         },
         "file_video": "video/ai/4.mp4"
+      }
+    ]
+  },
+  {
+    "id": "sertman",
+    "nome_categoria": "Sertman",
+    "descrizione_categoria": "Amico di Pippocazzo",
+    "progetti": [
+      {
+        "id": 1783945190360,
+        "titolo": "Le Empanadas",
+        "sottotitolo": "",
+        "istituzioni": [
+          "Frankie Pub"
+        ],
+        "autori": {},
+        "file_video": "video/sertman/empanadas.mov"
+      },
+      {
+        "id": 1783945288591,
+        "titolo": "",
+        "sottotitolo": "",
+        "istituzioni": [],
+        "autori": {},
+        "file_video": ""
       }
     ]
   }

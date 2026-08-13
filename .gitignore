@@ -38,3 +38,4 @@ build/
 *.swp
 *.swo
 *~ 
+data/DB.js
